@@ -9,11 +9,13 @@ from collections import defaultdict
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('input', nargs="+", help="The .jsonl tweet files to take in to produce user documents from")
+parser.add_argument('-o', '--outdir', nargs="?", default='user_docs_output', 
+                    help="The directory to output the tweet files to. Defaults to 'user_docs_output'")
 args = parser.parse_args()
 
 # Create the output directory, if needed
-if not os.path.exists('user_docs_output'):
-    os.makedirs('user_docs_output')
+if not os.path.exists(args.outdir):
+    os.makedirs(args.outdir)
 
 # Generator that goes through each line of the input files
 def lines_of_files():
@@ -36,6 +38,5 @@ for line in lines_of_files():
 
 # For each user id, create a user document
 for user_id, user_tweets in user_tweets_lookup.items():
-    with open(f"user_docs_output/{user_id}.userdoc", encoding="utf8", mode='w+') as user_doc:
-        print(len(user_tweets))
+    with open(f"{args.outdir}/{user_id}.userdoc", encoding="utf8", mode='w+') as user_doc:
         user_doc.write('\n'.join(user_tweets))
